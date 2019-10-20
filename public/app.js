@@ -3,15 +3,14 @@ $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p><hr>");
+    $("#articles").append("<p data-id='" + data[i].id + "'>" + "Title: " + data[i].title + "<br />" + "Link:  " + data[i].link + "<br />" + "Synopsis:  " + data[i].excerpt + "</p><button id='delete'>Delete article</button><hr>");
   }
 });
-
-
 // Whenever someone clicks a p tag
 $(document).on("click", "p", function() {
   // Empty the notes from the note section
   $("#notes").empty();
+
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
 
@@ -26,11 +25,11 @@ $(document).on("click", "p", function() {
       // The title of the article
       $("#notes").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
-      $("#notes").append("<input id='titleinput' name='title' >");
+      $("#notes").append("<input id='titleinput' name='title' >Enter note title above");
       // A textarea to add a new note body
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>Enter notes above");
       // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+      $("#notes").append("<hr><button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
       // If there's a note in the article
       if (data.note) {
@@ -69,4 +68,33 @@ $(document).on("click", "#savenote", function() {
   // Also, remove the values entered in the input and textarea for note entry
   $("#titleinput").val("");
   $("#bodyinput").val("");
+});
+
+// $("#delete").click(function() {
+//   $.ajax({
+//     method: "DELETE",
+//     url: "/articles/" + $(this).attr("data-id")
+//   })
+
+// });
+
+$(document).on("click", "#delete", function() {
+  var selected = $(this).parent();
+  // Grab the id associated with the article from the submit button
+  $.ajax({
+    method: "GET",
+    url: "/delete/" + selected.attr("_id"),
+    success: function(response) {
+      selected.deleteOne();
+    // $("#articles").empty();
+    }
+  })
+  // $.getJSON("/articles", function(data) {
+  //   // For each one
+  //   for (var i = 0; i < data.length; i++) {
+  //     // Display the apropos information on the page
+  //     $("#articles").append("<p data-id='" + data[i]._id + "'>" + "Title: " + data[i].title + "<br />" + "Link:  " + data[i].link + "<br />" + "Synopsis:  " + data[i].excerpt + "</p><button id='delete'>Delete article</button><hr>");
+  //   }
+  // });
+ 
 });
