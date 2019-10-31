@@ -27,9 +27,11 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true });
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(MONGODB_URI);
+var MONGODB_URI = "mongodb://localhost/mongoHeadlines";
+if (process.env.PORT) {
+  MONGODB_URI = "mongodb://"+process.env.dbuser+":"+ process.env.dbpassword +"@ds243717.mlab.com:43717/heroku_gx29v159"
+}
+mongoose.connect(MONGODB_URI,{ useNewUrlParser: true });
 // Routes
 
 // A GET route for scraping the Hawaii news website
